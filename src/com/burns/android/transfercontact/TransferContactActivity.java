@@ -208,9 +208,21 @@ public class TransferContactActivity extends Activity {
             				//mCommandService.obex_disconnect();
             			}
             			if(mCommandService.getObexState() == BluetoothCommandService.OBEX_STATE_GET_DONE){
-            				//0x90 0x00 0x03
-            				//bug ,fixme
+
             				Log.i(TAG,"string : "+ Utils.ConvertByteToString(buffer,bytes));
+            				Log.i(TAG, "buffer[4]:" + buffer[4] + "buffer[5]" + buffer[5]);
+            				
+            				int length =buffer[5] -3;
+            				Log.i(TAG, "vcard length = " + length);
+            				byte[] vcard_buffer= new byte[length];
+            			    System.arraycopy(buffer, 6, vcard_buffer, 0,   length);
+            				FileService fservice = new FileService(getApplicationContext());
+            				try {
+								fservice.save("1.vcf", vcard_buffer);//it's ok, I can browser in file manager.
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							
             			}
             			if(mCommandService.getObexState() == BluetoothCommandService.OBEX_STATE_DISCONNECT){

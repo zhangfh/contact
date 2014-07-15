@@ -294,7 +294,7 @@ A0 00 D0 49 00 CD
 			(byte) 0x04, //MaxListCount
 			(byte) 0x02, //length
 			(byte) 0x00,
-			(byte) 0x02  //0xffff fetch all
+			(byte) 0x01  //0xffff fetch all
 			
 			//see pcba spec
 	};
