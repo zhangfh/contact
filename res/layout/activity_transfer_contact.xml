@@ -23,5 +23,11 @@
         android:onClick="onBtnScan"
         android:padding="10dp"
         android:text="@string/scan" />
-
+      <ProgressBar   
+         android:id="@+id/TransferContactProgressBar"    
+         style="?android:attr/progressBarStyleHorizontal"     
+         android:layout_width="fill_parent"   
+         android:layout_height="wrap_content"  
+         android:visibility="gone"  
+         /> 
 </LinearLayout>

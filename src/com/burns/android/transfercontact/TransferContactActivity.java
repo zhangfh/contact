@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
@@ -27,6 +28,7 @@ public class TransferContactActivity extends Activity {
 	private static final String TAG = "TransferContact";
 	// Layout view
 	private TextView mTitle;
+	private ProgressBar mProgressBar;
 	
 	private BluetoothAdapter mBluetoothAdapter = null;
 	
@@ -66,6 +68,8 @@ public class TransferContactActivity extends Activity {
         mTitle.setText(R.string.app_name);
         mTitle = (TextView) findViewById(R.id.title_right_text);
         
+        mProgressBar = (ProgressBar)findViewById(R.id.TransferContactProgressBar);
+        mProgressBar.setIndeterminate(false); 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -159,6 +163,7 @@ public class TransferContactActivity extends Activity {
             	 	case BluetoothCommandService.OBEX_STATE_CONNECTED:
             	 		mTitle.setText(R.string.title_connected_to);
             	 		mTitle.append(mConnectedDeviceName);
+ 
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_CONNECTING:
             	 		mTitle.setText(R.string.title_connecting);
@@ -168,9 +173,19 @@ public class TransferContactActivity extends Activity {
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET:
             	 		mTitle.setText(R.string.title_get_contact);
+
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_DONE:
             	 		mTitle.setText(R.string.title_get_contact_done);
+            	 		mProgressBar.setProgress(mContactIndex); 
+            	 		break;
+            	 	case BluetoothCommandService.OBEX_STATE_GET_CONTACT_SIZE_DONE:
+            	 		mProgressBar.setVisibility(View.VISIBLE); 
+            	 		mProgressBar.setMax(mContactNumber); 
+            	 		mProgressBar.setProgress(0);
+            	 		break;
+            	 	case BluetoothCommandService.OBEX_STATE_GET_FINISH:
+            	 		mProgressBar.setVisibility(View.GONE); 
             	 		break;
             	 }
             	break;
@@ -303,6 +318,10 @@ A0 00 65 49 00 62
             					mContactIndex++;
             					mCommandService.getContact(mContactIndex);
             					
+            				}
+            				else{
+            					Log.i(TAG,"finish all contact get");
+            					mCommandService.setObexState(BluetoothCommandService.OBEX_STATE_GET_FINISH);
             				}
             				//File mfile = TransferContactActivity.this.getApplicationContext().getExternalCacheDir();
             				//Log.i(TAG,"file:" + mfile.getPath());

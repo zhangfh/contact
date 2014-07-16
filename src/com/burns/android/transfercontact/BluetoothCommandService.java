@@ -446,8 +446,9 @@ A0 00 D0 49 00 CD
     public static final int  OBEX_STATE_GET_CONTACT_SIZE_DONE= 4;            // now get size from  a remote obex server
     public static final int  OBEX_STATE_GET= 5;            // now get from  a remote obex server
     public static final int  OBEX_STATE_GET_DONE= 6;            // now get from  a remote obex server
-    public static final int  OBEX_STATE_DISCONNECT= 7;     // now disconnect from a remote obex server
-    public static final int  OBEX_STATE_DISCONNECT_DONE= 8; 
+    public static final int  OBEX_STATE_GET_FINISH= 7;     //now finish all contact get
+    public static final int  OBEX_STATE_DISCONNECT= 8;     // now disconnect from a remote obex server
+    public static final int  OBEX_STATE_DISCONNECT_DONE= 9; 
     // Constants that indicate command to computer
     public static final int EXIT_CMD = -1;
     public static final int VOL_UP = 1;
