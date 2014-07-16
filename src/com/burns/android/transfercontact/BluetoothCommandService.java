@@ -56,6 +56,96 @@ public class BluetoothCommandService {
 			(byte) 0x00,
 			(byte) 0xf4,
 			(byte) 0x83};
+	
+	private byte[] get_contactsize_cmd = {
+			(byte) 0x83, //get
+			(byte) 0x00, // packet length = 79
+			(byte) 0x4f, //packet length = 79
+			(byte) 0xcb, //HI for connect ID
+			(byte) 0x00, //connect id start
+			(byte) 0x65, //
+			(byte) 0x9c, //
+			(byte) 0x5c, //connect id end, please replace connnect id.
+			
+			(byte) 0x01, //name
+			(byte) 0x00, //length of name = 33
+			(byte) 0x21, //length of name = 33
+			
+			(byte) 0x00, //unicode start
+			(byte) 0x74,
+			(byte) 0x00,
+			(byte) 0x65,
+			(byte) 0x00,
+			(byte) 0x6c,
+			(byte) 0x00,
+			(byte) 0x65,
+			(byte) 0x00,
+			(byte) 0x63,
+			(byte) 0x00,
+			(byte) 0x6f,
+			(byte) 0x00,
+			(byte) 0x6d,
+			(byte) 0x00, 
+			(byte) 0x2f,
+			(byte) 0x00,
+			(byte) 0x70,
+			(byte) 0x00,
+			(byte) 0x62,
+			(byte) 0x00,
+			(byte) 0x2e,
+			(byte) 0x00,
+			(byte) 0x76,
+			(byte) 0x00,
+			(byte) 0x63,
+			(byte) 0x00,
+			(byte) 0x66,
+			(byte) 0x00,
+			(byte) 0x00, //unicode for  telecom/pb.vcf , the last two byte must be 0000
+			
+			(byte) 0x42, //type
+			(byte) 0x00,
+			(byte) 0x12, //length of type
+			
+			(byte) 0x78,
+			(byte) 0x2d,
+			(byte) 0x62,
+			(byte) 0x74, 
+			(byte) 0x2f, 
+			(byte) 0x70,
+			(byte) 0x68,
+			(byte) 0x6f,
+			(byte) 0x6e,
+			(byte) 0x65,
+			(byte) 0x62,
+			(byte) 0x6f,
+			(byte) 0x6f,
+			(byte) 0x6b,
+			(byte) 0x00, //x-bt/phonebook, the last byte must be 00\
+			
+			(byte) 0x4c, //app params
+			(byte) 0x00, //length of app params = 20
+			(byte) 0x14, //length of app params = 20
+			
+			(byte) 0x06, //vard filter
+			(byte) 0x08, //8bit
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00,
+			(byte) 0x00, //mask, 64bit, all 
+			
+			(byte) 0x07, //vard version
+			(byte) 0x01, //length
+			(byte) 0x01, //Format 0x01-->3.1, 00-->2.0
+			
+			(byte) 0x04, //MaxListCount
+			(byte) 0x02, //length
+			(byte) 0x00,
+			(byte) 0x00  //0x0000
+	};
 	private  byte[] get_cmd = { 
 			/*
 			//x-bt/vard
@@ -210,7 +300,8 @@ A0 00 D0 49 00 CD
               */
 			(byte) 0x83, //get
 			(byte) 0x00, // packet length = 79
-			(byte) 0x4f, //packet length = 79
+			//(byte) 0x4f, //packet length = 79
+			(byte) 0x53, // packet length=83
 			(byte) 0xcb, //HI for connect ID
 			(byte) 0x00, //connect id start
 			(byte) 0x65, //
@@ -273,8 +364,10 @@ A0 00 D0 49 00 CD
 			(byte) 0x00, //x-bt/phonebook, the last byte must be 00\
 			
 			(byte) 0x4c, //app params
-			(byte) 0x00, //length of app params = 20
-			(byte) 0x14, //length of app params = 20
+			//(byte) 0x00, //length of app params = 20
+			//(byte) 0x14, //length of app params = 20
+			(byte) 0x00,
+			(byte) 0x18, //length=24
 			
 			(byte) 0x06, //vard filter
 			(byte) 0x08, //8bit
@@ -294,7 +387,11 @@ A0 00 D0 49 00 CD
 			(byte) 0x04, //MaxListCount
 			(byte) 0x02, //length
 			(byte) 0x00,
-			(byte) 0x01  //0xffff fetch all
+			(byte) 0x01,  //0xffff fetch all
+			(byte) 0x05,  //ListStartOffset
+			(byte) 0x02,
+			(byte) 0x00,
+			(byte) 0x01   //
 			
 			//see pcba spec
 	};
@@ -345,10 +442,12 @@ A0 00 D0 49 00 CD
     public static final int OBEX_STATE_NONE = 0;           // we're doing nothing
     public static final int OBEX_STATE_CONNECTING = 1;     // now connect obex server
     public static final int OBEX_STATE_CONNECTED = 2;      // now connected to a remote obex server
-    public static final int  OBEX_STATE_GET= 3;            // now get from  a remote obex server
-    public static final int  OBEX_STATE_GET_DONE= 4;            // now get from  a remote obex server
-    public static final int  OBEX_STATE_DISCONNECT= 5;     // now disconnect from a remote obex server
-    public static final int  OBEX_STATE_DISCONNECT_DONE= 6; 
+    public static final int  OBEX_STATE_GET_CONTACT_SIZE= 3;            // now get size from  a remote obex server
+    public static final int  OBEX_STATE_GET_CONTACT_SIZE_DONE= 4;            // now get size from  a remote obex server
+    public static final int  OBEX_STATE_GET= 5;            // now get from  a remote obex server
+    public static final int  OBEX_STATE_GET_DONE= 6;            // now get from  a remote obex server
+    public static final int  OBEX_STATE_DISCONNECT= 7;     // now disconnect from a remote obex server
+    public static final int  OBEX_STATE_DISCONNECT_DONE= 8; 
     // Constants that indicate command to computer
     public static final int EXIT_CMD = -1;
     public static final int VOL_UP = 1;
@@ -499,6 +598,23 @@ A0 00 D0 49 00 CD
     	setObexState(OBEX_STATE_GET);
     }
     
+    public void get_continue_cmd()
+    {
+    	write(get_continue_cmd);
+    }
+    public void getContactsize()
+    {
+    	Log.i(TAG,"getContactsize");
+    	
+
+    	//replat get_cmd 4bit-7bit by mConnect_id
+    	for (int i=0;i<4;i++)
+    	{
+    		get_contactsize_cmd[i+4] = getConnect_id()[i];
+    	}
+    	write(get_contactsize_cmd);
+    	setObexState(OBEX_STATE_GET_CONTACT_SIZE);
+    }  
     public void obex_disconnect()
     {
     	Log.i(TAG,"obex_disconnect");
@@ -697,6 +813,10 @@ A0 00 D0 49 00 CD
                     int bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
                     Log.i(TAG,"string : "+ Utils.ConvertByteToString(buffer,bytes));
+                    // Send the obtained bytes to the UI Activity
+                    mHandler.obtainMessage(TransferContactActivity.MESSAGE_READ, bytes, -1, buffer)
+                            .sendToTarget();
+                    /*
                     if(buffer[0] == OBEX_RESPONSE_RESULT_OK)
                     {
                         if(getObexState() == OBEX_STATE_CONNECTING)
@@ -723,6 +843,7 @@ A0 00 D0 49 00 CD
                             //.sendToTarget();
                     	setObexState(OBEX_STATE_NONE);
                     }
+                    */
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
