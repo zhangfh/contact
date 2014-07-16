@@ -2,6 +2,8 @@ package com.burns.android.transfercontact;
 
 
 
+import java.io.File;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -46,6 +48,8 @@ public class TransferContactActivity extends Activity {
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
     
+    private int mContactIndex = 1;
+    private int mContactNumber= 0;
 	// Name of the connected device
     private String mConnectedDeviceName = null;
 	@Override
@@ -214,7 +218,8 @@ public class TransferContactActivity extends Activity {
     				}else if(buffer[0] == BluetoothCommandService.OBEX_RESPONSE_RESULT_OK)
     				{
     					Log.i(TAG,"get contact size done");
-    					
+    					//fixme
+    					mContactIndex = 1;// reset mContactIndex
     					/*
     		             * 0xA0 //sucess
     		             * 0x00
@@ -231,10 +236,14 @@ public class TransferContactActivity extends Activity {
     					 {
     						 int length = (buffer[8]&0x000000FF << 8)  + buffer[9]&0x000000FF;
     						 Log.i(TAG,  "length:"+ length);
+    						 mContactNumber = length;
     						 mCommandService.setObexState(BluetoothCommandService.OBEX_STATE_GET_CONTACT_SIZE_DONE);
-    						 
-    						 //fetch 1 vcard
-    						 mCommandService.getContact();
+    						 if(mContactIndex <= mContactNumber){
+    							 //fetch 1 vcard
+    							 Log.i(TAG,"fetch contact offset:" + mContactIndex);
+    							 mCommandService.getContact(mContactIndex);
+    							 //mContactIndex++;
+    						 }
     					 }
     				}else
     				{
@@ -277,14 +286,26 @@ A0 00 65 49 00 62
             				Log.i(TAG, "vcard length = " + length);
             				byte[] vcard_buffer= new byte[length];
             			    System.arraycopy(buffer, 6, vcard_buffer, 0,   length);
-            				FileService fservice = new FileService(getApplicationContext());
+            				//FileService fservice = new FileService(getApplicationContext());
+            				//File mfile = TransferContactActivity.this.getApplicationContext().getExternalCacheDir();
+            				//Log.i(TAG,"file:" + mfile.getName());
+   
+            				FileService fservice = new FileService(TransferContactActivity.this.getApplicationContext().getExternalCacheDir());
             				try {
-								fservice.save("1.vcf", vcard_buffer);//it's ok, I can browser in file manager.
+								fservice.save(String.format("%d.vcf",mContactIndex), vcard_buffer);//it's ok, I can browser in file manager.
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
             				mCommandService.setObexState(BluetoothCommandService.OBEX_STATE_GET_DONE);
+            				if(mContactIndex <= mContactNumber){
+            					Log.i(TAG,"fetch contact offset:" + mContactIndex);
+            					mContactIndex++;
+            					mCommandService.getContact(mContactIndex);
+            					
+            				}
+            				//File mfile = TransferContactActivity.this.getApplicationContext().getExternalCacheDir();
+            				//Log.i(TAG,"file:" + mfile.getPath());
    
         				}else
         				{

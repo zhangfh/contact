@@ -584,16 +584,19 @@ A0 00 D0 49 00 CD
         setObexState(OBEX_STATE_CONNECTING);
     }
 
-    public void getContact()
+    public void getContact(int index)
     {
     	Log.i(TAG,"getContact");
     	
-
+    	
     	//replat get_cmd 4bit-7bit by mConnect_id
     	for (int i=0;i<4;i++)
     	{
     		get_cmd[i+4] = getConnect_id()[i];
     	}
+    	//fill ListStartOffset
+    	get_cmd[get_cmd.length-1] =(byte)( index & 0xff);
+    	get_cmd[get_cmd.length-2] =(byte)( index>>8 & 0xff);
     	write(get_cmd);
     	setObexState(OBEX_STATE_GET);
     }

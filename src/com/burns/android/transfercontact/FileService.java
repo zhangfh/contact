@@ -13,11 +13,11 @@ import android.util.Log;
 public class FileService {
 
 	    private static final String TAG = "FileService";
-		private Context context;
-	    
-	    public FileService(Context context) {
+		//private Context context;
+	    File mFile;
+	    public FileService(File file ) {
 	    	super();
-	    	this.context = context;
+	    	this.mFile = file;
 	    }
 	                                                                                                                               
 	    public void save(String filename, byte[] content) throws Exception{
@@ -29,7 +29,8 @@ public class FileService {
 	      try {
 	           if (Environment.getExternalStorageState().equals(
 	                  Environment.MEDIA_MOUNTED)) {
-	              File dirPath = Environment.getExternalStorageDirectory();//get internal storage 
+	             // File dirPath = Environment.getExternalStorageDirectory();//get internal storage 
+	              File dirPath =mFile;
 	              Log.i(TAG,dirPath.toString());// /storage/emulated/0 
 	          
 	              File file = new File(dirPath.toString(), filename);
