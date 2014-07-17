@@ -3,13 +3,15 @@ package com.burns.android.transfercontact;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CustomProgressDialog extends Dialog {
 
-	   private Context context = null;  
+	   private static final String TAG = "CustomProgressDialog";
+	private Context context = null;  
 	    private static CustomProgressDialog mcustomProgressDialog = null;  
 	      
 	    public CustomProgressDialog(Context context){  
@@ -25,16 +27,17 @@ public class CustomProgressDialog extends Dialog {
 	    	mcustomProgressDialog = new CustomProgressDialog(context,R.style.CustomProgressDialog);  
 	    	mcustomProgressDialog.setContentView(R.layout.customprogressdialog);  
 	    	mcustomProgressDialog.getWindow().getAttributes().gravity = Gravity.CENTER;  
-	          
+	    	 
 	        return mcustomProgressDialog;  
 	    }  
 	   
 	    public void onWindowFocusChanged(boolean hasFocus){  
-	          
+	         
+	    	Log.i(TAG,"onWindowFoucusChanged" + hasFocus);
 	        if (mcustomProgressDialog == null){  
 	            return;  
 	        }  
-	          
+	        setCanceledOnTouchOutside(false);  
 	        ImageView imageView = (ImageView) mcustomProgressDialog.findViewById(R.id.loadingImageView);  
 	        AnimationDrawable animationDrawable = (AnimationDrawable) imageView.getBackground();  
 	        animationDrawable.start();  

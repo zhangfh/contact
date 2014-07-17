@@ -67,7 +67,7 @@ public class DeviceListActivity extends Activity {
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.device_list);
-
+        setFinishOnTouchOutside(false);  
         // Set result CANCELED incase the user backs out
         setResult(Activity.RESULT_CANCELED);
 

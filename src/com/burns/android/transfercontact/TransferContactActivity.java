@@ -185,12 +185,13 @@ public class TransferContactActivity extends Activity {
             	 	case BluetoothCommandService.OBEX_STATE_GET_DONE:
             	 		mTitle.setText(R.string.title_get_contact_done);
             	 		//mProgressBar.setProgress(mContactIndex); 
+            	 		startProgressDialog(String.format("%d",mContactIndex));
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_CONTACT_SIZE_DONE:
             	 		//mProgressBar.setVisibility(View.VISIBLE); 
             	 		//mProgressBar.setMax(mContactNumber); 
             	 		//mProgressBar.setProgress(0);
-            	 		startProgressDialog();
+            	 		startProgressDialog("0");
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_FINISH:
             	 		//mProgressBar.setVisibility(View.GONE); 
@@ -406,14 +407,19 @@ A0 00 65 49 00 62
 	  
 	        return super.onKeyDown(keyCode, event);  
 	    } 
-	    private void startProgressDialog(){  
+	    private void startProgressDialog(String indicator){  
 	        if (mprogressDialog == null){  
 	        	mprogressDialog = CustomProgressDialog.createDialog(this);  
 
-	        	mprogressDialog.setMessage(getApplicationContext().getResources().getString(R.string.loading));  
+	        	mprogressDialog.setMessage(getApplicationContext().getResources().getString(R.string.loading) + indicator); 
+	        	mprogressDialog.show();  
 	        }  
-	          
-	        mprogressDialog.show();  
+	        else
+	        {
+	        	mprogressDialog.setMessage(getApplicationContext().getResources().getString(R.string.loading) + indicator); 
+	        }
+	         
+	        
 	    }  
 	      
 	    private void stopProgressDialog(){  
