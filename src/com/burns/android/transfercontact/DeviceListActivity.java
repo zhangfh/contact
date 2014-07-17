@@ -16,6 +16,7 @@
 
 package com.burns.android.transfercontact;
 
+import java.util.Date;
 import java.util.Set;
 
 import android.app.Activity;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -48,6 +50,8 @@ public class DeviceListActivity extends Activity {
     private static final String TAG = "DeviceListActivity";
     private static final boolean D = true;
 
+ 
+    
     // Return Intent extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
@@ -181,5 +185,7 @@ public class DeviceListActivity extends Activity {
             }
         }
     };
+
+    
 
 }

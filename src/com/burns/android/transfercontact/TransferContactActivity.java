@@ -3,6 +3,7 @@ package com.burns.android.transfercontact;
 
 
 import java.io.File;
+import java.util.Date;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,8 +30,13 @@ public class TransferContactActivity extends Activity {
 	private static final String TAG = "TransferContact";
 	// Layout view
 	private TextView mTitle;
-	private ProgressBar mProgressBar;
+	//private ProgressBar mProgressBar;
 	
+	private CustomProgressDialog mprogressDialog = null;  
+
+	long preTime;  
+	public static final long TWO_SECOND = 2 * 1000; 
+	    
 	private BluetoothAdapter mBluetoothAdapter = null;
 	
 	// Intent request codes
@@ -68,8 +75,8 @@ public class TransferContactActivity extends Activity {
         mTitle.setText(R.string.app_name);
         mTitle = (TextView) findViewById(R.id.title_right_text);
         
-        mProgressBar = (ProgressBar)findViewById(R.id.TransferContactProgressBar);
-        mProgressBar.setIndeterminate(false); 
+       // mProgressBar = (ProgressBar)findViewById(R.id.TransferContactProgressBar);
+       // mProgressBar.setIndeterminate(false); 
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -177,15 +184,17 @@ public class TransferContactActivity extends Activity {
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_DONE:
             	 		mTitle.setText(R.string.title_get_contact_done);
-            	 		mProgressBar.setProgress(mContactIndex); 
+            	 		//mProgressBar.setProgress(mContactIndex); 
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_CONTACT_SIZE_DONE:
-            	 		mProgressBar.setVisibility(View.VISIBLE); 
-            	 		mProgressBar.setMax(mContactNumber); 
-            	 		mProgressBar.setProgress(0);
+            	 		//mProgressBar.setVisibility(View.VISIBLE); 
+            	 		//mProgressBar.setMax(mContactNumber); 
+            	 		//mProgressBar.setProgress(0);
+            	 		startProgressDialog();
             	 		break;
             	 	case BluetoothCommandService.OBEX_STATE_GET_FINISH:
-            	 		mProgressBar.setVisibility(View.GONE); 
+            	 		//mProgressBar.setVisibility(View.GONE); 
+            	 		stopProgressDialog();
             	 		break;
             	 }
             	break;
@@ -245,7 +254,7 @@ public class TransferContactActivity extends Activity {
     		             * 0x08 //PhonebookSize
     		             * 0x02 //length of Phonebooksize
     		             * 0x00
-    		             * 0xE1 //phonebook length= 225, actually my iphone has 224 contact.
+    		             * 0xE0 //phonebook length= 224, actually my iphone has 223 contact.
     		             */
     					 if(buffer[6] == 0x08)//phonebook size identifier
     					 {
@@ -313,9 +322,10 @@ A0 00 65 49 00 62
 								e.printStackTrace();
 							}
             				mCommandService.setObexState(BluetoothCommandService.OBEX_STATE_GET_DONE);
-            				if(mContactIndex <= mContactNumber){
+            				mContactIndex++;
+            				if(mContactIndex < mContactNumber){
             					Log.i(TAG,"fetch contact offset:" + mContactIndex);
-            					mContactIndex++;
+            					
             					mCommandService.getContact(mContactIndex);
             					
             				}
@@ -375,4 +385,41 @@ A0 00 65 49 00 62
          startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 		    
 	}
+	  
+	    @Override  
+	    public boolean onKeyDown(int keyCode, KeyEvent event) {  
+
+	        if (keyCode == KeyEvent.KEYCODE_BACK) {  
+	            long currentTime = new Date().getTime();  
+	  
+
+	            if ((currentTime - preTime) > TWO_SECOND) {  
+	                Toast.makeText(this, "put back again to exit.",  
+	                        Toast.LENGTH_SHORT).show();  
+	                
+	                preTime = currentTime;  
+	  
+
+	                return true;  
+	            }  
+	        }  
+	  
+	        return super.onKeyDown(keyCode, event);  
+	    } 
+	    private void startProgressDialog(){  
+	        if (mprogressDialog == null){  
+	        	mprogressDialog = CustomProgressDialog.createDialog(this);  
+
+	        	mprogressDialog.setMessage(getApplicationContext().getResources().getString(R.string.loading));  
+	        }  
+	          
+	        mprogressDialog.show();  
+	    }  
+	      
+	    private void stopProgressDialog(){  
+	        if (mprogressDialog != null){  
+	        	mprogressDialog.dismiss();  
+	        	mprogressDialog = null;  
+	        }  
+	    } 
 }

@@ -17,4 +17,7 @@
     <string name="none_found">No devices found</string>
     <string name="title_get_contact">ready to get contact</string>
     <string name="title_get_contact_done">get contact done, </string>
+    
+    <string name="waiting">waiting</string>
+    <string name="loading">Loading...</string>
 </resources>
