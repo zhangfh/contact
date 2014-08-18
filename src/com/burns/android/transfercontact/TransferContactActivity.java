@@ -257,6 +257,26 @@ public class TransferContactActivity extends Activity {
     		             * 0x00
     		             * 0xE0 //phonebook length= 224, actually my iphone has 223 contact.
     		             */
+    		             /*I use this program to debug with android device, get below data:
+			      *0xA0 
+			      *0x00 
+			      *0x12 //packet length = 18
+			      *0xCB 
+			      *0x00 
+			      *0x00 
+			      *0x00 
+			      *0x01 //connect id, we can see iphone don't have this param. 
+			      *0x4C 
+			      *0x00 
+			      *0x07 
+			      *0x08 //phonkbooksize
+			      *0x02 
+			      *0x00 
+			      *0x01 //currently, the device has 1 contact
+			      *0x49 
+			      *0x00 
+			      *0x03 
+*/
     					 if(buffer[6] == 0x08)//phonebook size identifier
     					 {
     						 int length = (buffer[8]&0x000000FF << 8)  + buffer[9]&0x000000FF;
@@ -300,7 +320,7 @@ A0 00 65 49 00 62
 55 49 44 3A 33 66 
 0D 0A 
 45 4E 44 3A 56 43 41 52 44 
-0D 0A //»Ø³µ »»ÐÐ
+0D 0A //Â»Ã˜Â³Âµ Â»Â»ÃÃ
 
         					 */
             				Log.i(TAG, "buffer[4]:" + buffer[4] + "buffer[5]:" + buffer[5]);
